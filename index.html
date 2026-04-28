@@ -8,6 +8,17 @@
 <body>
   <h1>Student Information Management</h1>
 
+  <!-- Login Form -->
+  <h2>Login</h2>
+  <form id="loginForm">
+    <input type="text" id="username" placeholder="Username" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <button type="submit">Login</button>
+  </form>
+  <p id="loginStatus"></p>
+
+  <!-- Student Form -->
+  <h2>Add Student</h2>
   <form id="studentForm">
     <input type="text" id="id" placeholder="Student ID" required>
     <input type="text" id="name" placeholder="Student Name" required>
@@ -15,6 +26,7 @@
     <button type="submit">Add Student</button>
   </form>
 
+  <!-- Student Records -->
   <h2>Student Records</h2>
   <table id="studentTable">
     <tr><th>ID</th><th>Name</th><th>Course</th></tr>

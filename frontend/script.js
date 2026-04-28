@@ -1,6 +1,40 @@
-const form = document.getElementById("studentForm");
+let role = null; // will be set after login
+
+const loginForm = document.getElementById("loginForm");
+const loginStatus = document.getElementById("loginStatus");
+const studentForm = document.getElementById("studentForm");
 const table = document.getElementById("studentTable");
 
+// Handle login
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+
+  try {
+    const res = await fetch("http://localhost:3000/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password })
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      role = data.role;
+      localStorage.setItem("role", role);
+      loginStatus.innerText = `Logged in as ${role}`;
+      loadStudents();
+    } else {
+      loginStatus.innerText = data.message;
+    }
+  } catch (err) {
+    console.error("Login error:", err);
+  }
+});
+
+// Load students
 async function loadStudents() {
   try {
     const res = await fetch("http://localhost:3000/students");
@@ -19,8 +53,14 @@ async function loadStudents() {
   }
 }
 
-form.addEventListener("submit", async (e) => {
+// Add student
+studentForm.addEventListener("submit", async (e) => {
   e.preventDefault();
+
+  if (!role) {
+    alert("Please login first!");
+    return;
+  }
 
   const student = {
     id: document.getElementById("id").value,
@@ -32,14 +72,12 @@ form.addEventListener("submit", async (e) => {
     await fetch("http://localhost:3000/students", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(student)
+      body: JSON.stringify({ role, student })
     });
 
-    form.reset();
+    studentForm.reset();
     loadStudents();
   } catch (err) {
     console.error("Error adding student:", err);
   }
 });
-
-loadStudents();
