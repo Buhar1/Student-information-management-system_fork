@@ -3,26 +3,27 @@ body {
   margin: 20px;
 }
 
-form input {
+form {
+  margin-bottom: 20px;
+}
+
+input {
   margin: 5px;
   padding: 8px;
 }
 
 button {
   padding: 8px 12px;
-  background: #007bff;
-  color: white;
-  border: none;
   cursor: pointer;
 }
 
 table {
-  margin-top: 20px;
   border-collapse: collapse;
   width: 100%;
 }
 
 th, td {
-  border: 1px solid #ddd;
+  border: 1px solid #333;
   padding: 8px;
+  text-align: left;
 }
