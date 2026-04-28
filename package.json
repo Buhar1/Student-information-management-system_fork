@@ -1,0 +1,25 @@
+{
+  "name": "student-information-management-system",
+  "version": "1.0.0",
+  "description": "INS 204 group projects",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sencil/Student-information-management-system.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/sencil/Student-information-management-system/issues"
+  },
+  "homepage": "https://github.com/sencil/Student-information-management-system#readme",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1"
+  }
+}
