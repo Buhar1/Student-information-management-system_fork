@@ -8,6 +8,11 @@ app.use(express.json());
 
 let students = [];
 
+// Root route (shows a welcome message)
+app.get("/", (req, res) => {
+  res.send("Backend is running! Use /students to view data.");
+});
+
 // Get all students
 app.get("/students", (req, res) => {
   res.json(students);
@@ -21,5 +26,5 @@ app.post("/students", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`✅ Server running on http://localhost:${PORT}`);
 });
