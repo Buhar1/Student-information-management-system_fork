@@ -5,6 +5,9 @@ const loginStatus = document.getElementById("loginStatus");
 const studentForm = document.getElementById("studentForm");
 const table = document.getElementById("studentTable");
 
+// localhost with Render backend URL
+const BASE_URL = "https://student-information-management-system-nbid.onrender.com";
+
 // Handle login
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -13,7 +16,7 @@ loginForm.addEventListener("submit", async (e) => {
   const password = document.getElementById("password").value;
 
   try {
-    const res = await fetch("http://localhost:3000/login", {
+    const res = await fetch(`${BASE_URL}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password })
@@ -37,16 +40,32 @@ loginForm.addEventListener("submit", async (e) => {
 // Load students
 async function loadStudents() {
   try {
-    const res = await fetch("http://localhost:3000/students");
+    const res = await fetch(`${BASE_URL}/students`);
     const students = await res.json();
 
-    table.innerHTML = "<tr><th>ID</th><th>Name</th><th>Course</th></tr>";
+    table.innerHTML = "<tr><th>ID</th><th>Name</th><th>Course</th><th>Actions</th></tr>";
 
     students.forEach(s => {
       const row = table.insertRow();
       row.insertCell(0).innerText = s.id;
       row.insertCell(1).innerText = s.name;
       row.insertCell(2).innerText = s.course;
+
+      const actionsCell = row.insertCell(3);
+
+      // Show buttons only if admin
+      if (role === "admin") {
+        const editBtn = document.createElement("button");
+        editBtn.innerText = "Edit";
+        editBtn.onclick = () => editStudent(s.id);
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.innerText = "Delete";
+        deleteBtn.onclick = () => deleteStudent(s.id);
+
+        actionsCell.appendChild(editBtn);
+        actionsCell.appendChild(deleteBtn);
+      }
     });
   } catch (err) {
     console.error("Error loading students:", err);
@@ -69,7 +88,7 @@ studentForm.addEventListener("submit", async (e) => {
   };
 
   try {
-    await fetch("http://localhost:3000/students", {
+    await fetch(`${BASE_URL}/students`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ role, student })
@@ -81,3 +100,32 @@ studentForm.addEventListener("submit", async (e) => {
     console.error("Error adding student:", err);
   }
 });
+
+// Edit student (admin only)
+async function editStudent(id) {
+  const newName = prompt("Enter new name:");
+  const newCourse = prompt("Enter new course:");
+
+  if (!newName || !newCourse) return;
+
+  const student = { id, name: newName, course: newCourse };
+
+  await fetch(`${BASE_URL}/students/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ role, student })
+  });
+
+  loadStudents();
+}
+
+// Delete student (admin only)
+async function deleteStudent(id) {
+  await fetch(`${BASE_URL}/students/${id}`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ role })
+  });
+
+  loadStudents();
+}
