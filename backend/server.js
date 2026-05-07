@@ -1,82 +1,63 @@
 const express = require("express");
 const cors = require("cors");
-const app = express();
-const PORT = process.env.PORT || 3000;
+const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
 
+const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Sample users with roles
-const users = [
-  { username: "admin", password: "admin123", role: "admin" },
-  { username: "student", password: "student123", role: "student" }
-];
+const SECRET = "your_secret_key"; // use env variable in production
 
-// In‑memory student list
-let students = [];
+// Connect to MongoDB
+mongoose.connect("mongodb+srv://studentAdmin:StrongPassword123@cluster0.abcd.mongodb.net/student_system", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(() => console.log("MongoDB Atlas connected"))
+  .catch(err => console.error("MongoDB error:", err));
 
-// Root route
-app.get("/", (req, res) => {
-  res.send("Backend is running! Use /login to authenticate and /students to manage data.");
-});
+
+// Import models
+const Student = require("./models/Student");
+const Course = require("./models/Course");
+const Announcement = require("./models/Announcement");
+
+// Auth middleware
+function auth(req, res, next) {
+  const header = req.headers["authorization"];
+  if (!header) return res.status(403).json({ message: "No token" });
+  const token = header.split(" ")[1];
+  jwt.verify(token, SECRET, (err, user) => {
+    if (err) return res.status(403).json({ message: "Invalid token" });
+    req.user = user;
+    next();
+  });
+}
 
 // Login route
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
-  const user = users.find(u => u.username === username && u.password === password);
-
-  if (!user) {
-    return res.status(401).json({ message: "Invalid credentials" });
+  if (username === "admin" && password === "admin123") {
+    const token = jwt.sign({ role: "admin" }, SECRET, { expiresIn: "1h" });
+    return res.json({ token, role: "admin" });
   }
-
-  res.json({ message: "Login successful", role: user.role });
+  if (username === "student" && password === "student123") {
+    const token = jwt.sign({ role: "student" }, SECRET, { expiresIn: "1h" });
+    return res.json({ token, role: "student" });
+  }
+  res.status(401).json({ message: "Invalid credentials" });
 });
 
-// Add student info (allowed for both admin and student)
-app.post("/students", (req, res) => {
-  const { role, student } = req.body;
-  if (role !== "admin" && role !== "student") {
-    return res.status(403).json({ message: "Unauthorized" });
-  }
-
-  students.push(student);
-  res.json({ message: "Student added!", student });
-});
-
-// Get all students (anyone can view)
-app.get("/students", (req, res) => {
+// Example: Students CRUD
+app.get("/students", auth, async (req, res) => {
+  const students = await Student.find();
   res.json(students);
 });
 
-// Edit student info (admin only)
-app.put("/students/:id", (req, res) => {
-  const { role, student } = req.body;
-  if (role !== "admin") {
-    return res.status(403).json({ message: "Only admin can edit" });
-  }
-
-  const id = req.params.id;
-  const index = students.findIndex(s => s.id === id);
-
-  if (index === -1) return res.status(404).json({ message: "Student not found" });
-
-  students[index] = student;
-  res.json({ message: "Student updated!", student });
+app.post("/students", auth, async (req, res) => {
+  const newStudent = new Student(req.body.student);
+  await newStudent.save();
+  res.json({ message: "Student added" });
 });
 
-// Delete student info (admin only)
-app.delete("/students/:id", (req, res) => {
-  const { role } = req.body;
-  if (role !== "admin") {
-    return res.status(403).json({ message: "Only admin can delete" });
-  }
-
-  const id = req.params.id;
-  students = students.filter(s => s.id !== id);
-  res.json({ message: "Student deleted!" });
-});
-
-// Start server
-app.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`);
-});
+// … same pattern for Courses and Announcements
