@@ -10,7 +10,7 @@ app.use(express.json());
 const SECRET = "your_secret_key"; // use env variable in production
 
 // Connect to MongoDB
-mongoose.connect("mongodb+srv://studentAdmin:StrongPassword123@cluster0.abcd.mongodb.net/student_system", {
+mongoose.connect("mongodb+srv://studentAdmin:StrongPassword123@cluster0.vesg4am.mongodb.net/?appName=Cluster0", {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(() => console.log("MongoDB Atlas connected"))
