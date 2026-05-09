@@ -1,10 +1,11 @@
-const mongoose = require("mongoose");
+const sqlite3 = require("sqlite3").verbose();
+const db = new sqlite3.Database("./student_system.db");
 
-const announcementSchema = new mongoose.Schema({
-  id: { type: String, required: true, unique: true },
-  title: { type: String, required: true },
-  description: { type: String, required: true },
-  date: { type: Date, default: Date.now }
-});
+db.run(`CREATE TABLE IF NOT EXISTS announcements (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  title TEXT,
+  message TEXT,
+  date TEXT
+)`);
 
-module.exports = mongoose.model("Announcement", announcementSchema);
+module.exports = db;

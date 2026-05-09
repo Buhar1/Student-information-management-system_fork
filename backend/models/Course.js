@@ -1,10 +1,12 @@
-const mongoose = require("mongoose");
+const sqlite3 = require("sqlite3").verbose();
+const db = new sqlite3.Database("./student_system.db");
 
-const courseSchema = new mongoose.Schema({
-  id: { type: String, required: true, unique: true },
-  name: { type: String, required: true },
-  instructor: { type: String, required: true },
-  credits: { type: Number, required: true }
-});
+db.run(`CREATE TABLE IF NOT EXISTS courses (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  code TEXT,
+  name TEXT,
+  lecturer TEXT,
+  credits INTEGER
+)`);
 
-module.exports = mongoose.model("Course", courseSchema);
+module.exports = db;

@@ -1,6 +1,5 @@
 const express = require("express");
 const cors = require("cors");
-const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 
 const app = express();
@@ -9,16 +8,37 @@ app.use(express.json());
 
 const SECRET = "your_secret_key"; // use env variable in production
 
-// Connect to MongoDB Atlas
-mongoose.connect("mongodb://studentAdmin:vIMywiKIU6rQgRO7@cluster0-shard-00-00.vesg4am.mongodb.net:27017,cluster0-shard-00-01.vesg4am.mongodb.net:27017,cluster0-shard-00-02.vesg4am.mongodb.net:27017/student_system?ssl=true&replicaSet=atlas-xyz-shard-0&authSource=admin&retryWrites=true&w=majority")
-  .then(() => console.log("MongoDB Atlas connected"))
-  .catch(err => console.error("MongoDB error:", err));
+// SQLite setup
+const sqlite3 = require("sqlite3").verbose();
+const db = new sqlite3.Database("./student_system.db", (err) => {
+  if (err) console.error("SQLite error:", err.message);
+  else console.log("SQLite connected successfully");
+});
 
-// Import models
-const Student = require("./models/Student");
-const Course = require("./models/Course");
-const Announcement = require("./models/Announcement");
+// Create tables if not exist
+db.serialize(() => {
+  db.run(`CREATE TABLE IF NOT EXISTS students (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    email TEXT,
+    course TEXT
+  )`);
 
+  db.run(`CREATE TABLE IF NOT EXISTS courses (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    code TEXT,
+    name TEXT,
+    lecturer TEXT,
+    credits INTEGER
+  )`);
+
+  db.run(`CREATE TABLE IF NOT EXISTS announcements (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT,
+    message TEXT,
+    date TEXT
+  )`);
+});
 
 // Auth middleware
 function auth(req, res, next) {
@@ -46,27 +66,143 @@ app.post("/login", (req, res) => {
   res.status(401).json({ message: "Invalid credentials" });
 });
 
-// Example: Students CRUD
-app.get("/students", auth, async (req, res) => {
-  const students = await Student.find();
-  res.json(students);
+
+// ---------------- STUDENTS CRUD ----------------
+
+// GET all students
+app.get("/students", auth, (req, res) => {
+  db.all("SELECT * FROM students", [], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
+  });
 });
 
-app.post("/students", auth, async (req, res) => {
-  const newStudent = new Student(req.body.student);
-  await newStudent.save();
-  res.json({ message: "Student added" });
+// POST add student
+app.post("/students", auth, (req, res) => {
+  const { name, email, course } = req.body.student;
+  db.run(
+    "INSERT INTO students (name, email, course) VALUES (?, ?, ?)",
+    [name, email, course],
+    function (err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ id: this.lastID, message: "Student added" });
+    }
+  );
 });
 
-// … same pattern for Courses and Announcements
-
-
-// Optional root route
-app.get("/", (req, res) => {
-  res.send("API is running and connected to MongoDB Atlas!");
+// PUT update student
+app.put("/students/:id", auth, (req, res) => {
+  const { name, email, course } = req.body.student;
+  db.run(
+    "UPDATE students SET name=?, email=?, course=? WHERE id=?",
+    [name, email, course, req.params.id],
+    function (err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ message: "Student updated" });
+    }
+  );
 });
 
-const PORT = 10000; // you can change this if you want
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+// DELETE student
+app.delete("/students/:id", auth, (req, res) => {
+  db.run("DELETE FROM students WHERE id=?", req.params.id, function (err) {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ message: "Student deleted" });
+  });
+});
+
+
+// ---------------- COURSES CRUD ----------------
+
+// GET all courses
+app.get("/courses", auth, (req, res) => {
+  db.all("SELECT * FROM courses", [], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
+  });
+});
+
+// POST add course
+app.post("/courses", auth, (req, res) => {
+  const { code, name, lecturer, credits } = req.body.course;
+  db.run(
+    "INSERT INTO courses (code, name, lecturer, credits) VALUES (?, ?, ?, ?)",
+    [code, name, lecturer, credits],
+    function (err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ id: this.lastID, message: "Course added" });
+    }
+  );
+});
+
+// PUT update course
+app.put("/courses/:id", auth, (req, res) => {
+  const { code, name, lecturer, credits } = req.body.course;
+  db.run(
+    "UPDATE courses SET code=?, name=?, lecturer=?, credits=? WHERE id=?",
+    [code, name, lecturer, credits, req.params.id],
+    function (err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ message: "Course updated" });
+    }
+  );
+});
+
+// DELETE course
+app.delete("/courses/:id", auth, (req, res) => {
+  db.run("DELETE FROM courses WHERE id=?", req.params.id, function (err) {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ message: "Course deleted" });
+  });
+});
+
+
+// ---------------- ANNOUNCEMENTS CRUD ----------------
+
+// GET all announcements
+app.get("/announcements", auth, (req, res) => {
+  db.all("SELECT * FROM announcements", [], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
+  });
+});
+
+// POST add announcement
+app.post("/announcements", auth, (req, res) => {
+  const { title, message, date } = req.body.announcement;
+  db.run(
+    "INSERT INTO announcements (title, message, date) VALUES (?, ?, ?)",
+    [title, message, date],
+    function (err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ id: this.lastID, message: "Announcement added" });
+    }
+  );
+});
+
+// PUT update announcement
+app.put("/announcements/:id", auth, (req, res) => {
+  const { title, message, date } = req.body.announcement;
+  db.run(
+    "UPDATE announcements SET title=?, message=?, date=? WHERE id=?",
+    [title, message, date, req.params.id],
+    function (err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ message: "Announcement updated" });
+    }
+  );
+});
+
+// DELETE announcement
+app.delete("/announcements/:id", auth, (req, res) => {
+  db.run("DELETE FROM announcements WHERE id=?", req.params.id, function (err) {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ message: "Announcement deleted" });
+  });
+});
+
+
+// ---------------- SERVER START ----------------
+app.listen(10000, () => {
+  console.log("Server running on http://localhost:10000");
 });
