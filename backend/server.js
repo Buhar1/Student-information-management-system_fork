@@ -9,18 +9,16 @@ app.use(express.json());
 
 const SECRET = "your_secret_key"; // use env variable in production
 
-// Connect to MongoDB
-mongoose.connect("mongodb+srv://studentAdmin:StrongPassword123@cluster0.vesg4am.mongodb.net/?appName=Cluster0", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}).then(() => console.log("MongoDB Atlas connected"))
+// Connect to MongoDB Atlas
+mongoose.connect("mongodb://studentAdmin:vIMywiKIU6rQgRO7@cluster0-shard-00-00.vesg4am.mongodb.net:27017,cluster0-shard-00-01.vesg4am.mongodb.net:27017,cluster0-shard-00-02.vesg4am.mongodb.net:27017/student_system?ssl=true&replicaSet=atlas-xyz-shard-0&authSource=admin&retryWrites=true&w=majority")
+  .then(() => console.log("MongoDB Atlas connected"))
   .catch(err => console.error("MongoDB error:", err));
-
 
 // Import models
 const Student = require("./models/Student");
 const Course = require("./models/Course");
 const Announcement = require("./models/Announcement");
+
 
 // Auth middleware
 function auth(req, res, next) {
