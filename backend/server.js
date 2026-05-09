@@ -59,3 +59,14 @@ app.post("/students", auth, async (req, res) => {
 });
 
 // … same pattern for Courses and Announcements
+
+
+// Optional root route
+app.get("/", (req, res) => {
+  res.send("API is running and connected to MongoDB Atlas!");
+});
+
+const PORT = 10000; // you can change this if you want
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
