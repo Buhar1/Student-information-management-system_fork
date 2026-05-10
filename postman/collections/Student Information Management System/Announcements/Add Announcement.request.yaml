@@ -1,0 +1,18 @@
+$kind: http-request
+name: Add Announcement
+method: POST
+url: '{{baseUrl}}/announcements'
+order: 2000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "announcement": {
+        "title": "Welcome",
+        "message": "Welcome to the new semester!",
+        "date": "2026-05-10"
+      }
+    }

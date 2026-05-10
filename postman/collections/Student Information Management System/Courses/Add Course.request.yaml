@@ -1,0 +1,19 @@
+$kind: http-request
+name: Add Course
+method: POST
+url: '{{baseUrl}}/courses'
+order: 2000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "course": {
+        "code": "CS101",
+        "name": "Intro to CS",
+        "lecturer": "Dr. Smith",
+        "credits": 3
+      }
+    }

@@ -1,0 +1,11 @@
+$kind: collection
+name: Student Information Management System
+description: API collection for the Student Information Management System
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'
+variables:
+  - key: baseUrl
+    value: 'http://localhost:10000'

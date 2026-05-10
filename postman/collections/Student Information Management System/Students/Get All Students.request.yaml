@@ -1,0 +1,10 @@
+$kind: http-request
+name: Get All Students
+method: GET
+url: '{{baseUrl}}/students'
+order: 1000
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{token}}'

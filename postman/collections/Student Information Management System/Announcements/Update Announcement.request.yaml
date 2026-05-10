@@ -1,0 +1,18 @@
+$kind: http-request
+name: Update Announcement
+method: PUT
+url: '{{baseUrl}}/announcements/1'
+order: 3000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "announcement": {
+        "title": "Welcome",
+        "message": "Welcome to the new semester! Classes begin Monday.",
+        "date": "2026-05-10"
+      }
+    }

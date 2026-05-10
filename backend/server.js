@@ -78,6 +78,7 @@ app.get("/students", auth, (req, res) => {
 });
 
 // POST add student
+// STUDENTS CRUD
 app.post("/students", auth, (req, res) => {
   const { name, email, course } = req.body.student;
   db.run(
@@ -89,6 +90,7 @@ app.post("/students", auth, (req, res) => {
     }
   );
 });
+
 
 // PUT update student
 app.put("/students/:id", auth, (req, res) => {
