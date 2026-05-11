@@ -57,10 +57,6 @@ async function loadDashboard() {
   document.getElementById("totalStudents").innerText = students.length;
   document.getElementById("totalCourses").innerText = courses.length;
 
-  const coursesRes = await fetch(`${BASE_URL}/courses`, {
-    headers: { "Authorization": `Bearer ${token}` }
-  });
-  
   // Placeholder for attendance until implemented
   document.getElementById("avgAttendance").innerText = "85%";
 
