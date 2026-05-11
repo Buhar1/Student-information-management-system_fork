@@ -281,9 +281,21 @@ async function deleteAnnouncement(id) {
   loadAnnouncements();
 }
 
+
 // Settings
 function saveSettings() {
   const darkMode = document.getElementById("darkMode").checked;
   const notifications = document.getElementById("notifications").checked;
   alert(`Settings saved:\nDark Mode: ${darkMode}\nNotifications: ${notifications}`);
+}
+
+function setRole(role) {
+  document.querySelectorAll('.role-item').forEach(btn => {
+    btn.classList.remove('active');
+  });
+
+  event.currentTarget.classList.add('active');
+
+  const loginBtn = document.getElementById('loginButton');
+  loginBtn.innerText = `Login as ${role}`;
 }
