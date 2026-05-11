@@ -3,32 +3,53 @@
 <head>
   <title>Student Information System</title>
   <link rel="stylesheet" href="frontend/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <div id="loginPage">
-    <h1>Student Information System</h1>
+  
+<div id="loginPage">
+  <div class="login-card">
+    <div class="icon-header">
+       <span class="cap-icon">🎓</span> </div>
+    <h2>SIS Portal</h2>
+    <p class="subtitle">Select your role and login to continue</p>
+
+    <div class="role-selector">
+      <button type="button" class="role-btn active" data-role="student">Student</button>
+      <button type="button" class="role-btn" data-role="lecturer">Lecturer</button>
+      <button type="button" class="role-btn" data-role="admin">Admin</button>
+    </div>
+
     <form id="loginForm">
-      <select id="role">
-        <option value="student">Student</option>
-        <option value="lecturer">Lecturer</option>
-        <option value="admin">Admin</option>
-      </select>
-      <input type="text" id="username" placeholder="Enter your username">
-      <input type="password" id="password" placeholder="Enter your password">
-      <button type="submit">Login</button>
+      <label for="username">Username</label>
+      <input type="text" id="username" placeholder="Enter your username" required>
+     
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Enter your password" required>
+
+      <button type="submit" class="login-btn" id="loginButton">Login as Student</button>
     </form>
+    <p class="demo-text">Demo: Use any username/password to login</p>
     <p id="loginStatus"></p>
   </div>
+</div>
+
+
+
+
+
+
+
 
   <div class="app-container" id="mainApp" style="display:none;">
   <aside class="sidebar">
     <div class="logo">SIS Portal</div>
     <nav>
       <button onclick="showPage('dashboard')" class="nav-item active">Dashboard</button>
-      <button onclick="showPage('students')" class="nav-item active">Manage Students</button>
-      <button onclick="showPage('courses')" class="nav-item active">Manage Courses</button>
-      <button onclick="showPage('announcements')" class="nav-item active">Announcements</button>
-      <button onclick="showPage('settings')" class="nav-item active">Settings</button>
+      <button onclick="showPage('students')" >Manage Students</button>
+      <button onclick="showPage('courses')" >Manage Courses</button>
+      <button onclick="showPage('announcements')">Announcements</button>
+      <button onclick="showPage('settings')">Settings</button>
     </nav>
   </aside>
  
