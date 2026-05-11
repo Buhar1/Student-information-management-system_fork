@@ -27,7 +27,10 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
       role = data.role;
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);
-      document.getElementById("loginStatus").innerText = `Logged in as ${role}`;
+
+      document.getElementById("loginPage").style.display = "none";
+      document.getElementById("mainApp").style.display = "flex";
+
       showPage("dashboard");
       loadDashboard();
       loadStudents();
@@ -43,20 +46,43 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 
 // Dashboard
 async function loadDashboard() {
-  const studentsRes = await fetch(`${BASE_URL}/students`, {
-    headers: { "Authorization": `Bearer ${token}` }
-  });
+  const [studentsRes, coursesRes] = await Promise.all([
+    fetch(`${BASE_URL}/students`, {headers: {"Authorization": `Bearer ${token}`}}),
+    fetch(`${BASE_URL}/courses`, {headers: {"Authorization": `Bearer ${token}`}}),
+  ]);
+    
   const students = await studentsRes.json();
+  const courses = await coursesRes.json();
+
   document.getElementById("totalStudents").innerText = students.length;
+  document.getElementById("totalCourses").innerText = courses.length;
 
   const coursesRes = await fetch(`${BASE_URL}/courses`, {
     headers: { "Authorization": `Bearer ${token}` }
   });
-  const courses = await coursesRes.json();
-  document.getElementById("totalCourses").innerText = courses.length;
-
+  
   // Placeholder for attendance until implemented
   document.getElementById("avgAttendance").innerText = "85%";
+
+  //GPA chart
+  const ctx = document.getElementById('gpaChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['Fall 2024', 'Spring 2025'],
+      datasets: [{
+        label: 'GPA',
+        data: [3.7, 3.8],
+        borderColor: '#007bff',
+        tension: 0.3
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } }
+    }
+  });
 }
 
 // Students

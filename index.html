@@ -20,21 +20,44 @@
     <p id="loginStatus"></p>
   </div>
 
-  <div class="sidebar">
-    <ul>
-      <li><a href="#" onclick="showPage('dashboard')">Dashboard</a></li>
-      <li><a href="#" onclick="showPage('students')">Manage Students</a></li>
-      <li><a href="#" onclick="showPage('courses')">Manage Courses</a></li>
-      <li><a href="#" onclick="showPage('announcements')">Announcements</a></li>
-      <li><a href="#" onclick="showPage('settings')">Settings</a></li>
-    </ul>
-  </div>
+  <div class="app-container" id="mainApp" style="display:none;">
+  <aside class="sidebar">
+    <div class="logo">SIS Portal</div>
+    <nav>
+      <button onclick="showPage('dashboard')" class="nav-item active">Dashboard</button>
+      <button onclick="showPage('students')" class="nav-item active">Manage Students</button>
+      <button onclick="showPage('courses')" class="nav-item active">Manage Courses</button>
+      <button onclick="showPage('announcements')" class="nav-item active">Announcements</button>
+      <button onclick="showPage('settings')" class="nav-item active">Settings</button>
+    </nav>
+  </aside>
+ 
+  <main class="content">
+    <header class="top-bar">
+      <h1>Dashboard</h1>
+      <div class="user-profile">Student User</div>
+    </header>
 
   <div id="dashboard" class="page">
-    <h2>Dashboard</h2>
-    <div class="card">Total Students: <span id="totalStudents">0</span></div>
-    <div class="card">Total Courses: <span id="totalCourses">0</span></div>
-    <div class="card">Average Attendance: <span id="avgAttendance">0%</span></div>
+     <section class="stats-grid">
+        <div class="card">
+          <h3>Enrolled Courses</h3>
+          <p id="totalCourses">0</p> </div>
+        <div class="card">
+          <h3>Current GPA</h3>
+          <p>3.80</p>
+        </div>
+        <div class="card">
+            <h3>Attendance</h3>
+            <p id="avgAttendance">93%</p> </div>
+    </section>
+
+    <section class="charts-grid">
+      <div class="card chart">
+        <h3>GPA Trend</h3>
+        <canvas id="gpaChart"></canvas>
+      </div>
+    </section>
   </div>
 
   <div id="students" class="page" style="display:none;">
@@ -77,7 +100,9 @@
     <label><input type="checkbox" id="notifications"> Enable Notifications</label><br>
     <button onclick="saveSettings()">Save Settings</button>
   </div>
-
+  
+  </main>
+</div>
   <script src="frontend/script.js"></script>
 </body>
 </html>
