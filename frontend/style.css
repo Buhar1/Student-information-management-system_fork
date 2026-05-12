@@ -49,13 +49,14 @@ body {
 
 .login-btn {
   width: 100%;
-  background-color: #2563eb;
+  background-color: #1a73e8;
   color: white;
   padding: 14px;
   border: none;
   border-radius: 6px;
   font-weight: bold;
   cursor: pointer;
+  margin-top: 15px;
 
 }
 
@@ -149,9 +150,26 @@ th {
 #loginForm {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 8px;
   width: 100%;
+  text-align: left;
 }
+
+#loginForm input {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  padding: 12px;
+}
+
+#loginForm label {
+  font-size: 0.85rem;
+ font-weight: 600;
+ color: #555;
+margin-top: 10px;
+}
+
 
 input {
   padding: 12px;
@@ -162,30 +180,32 @@ input {
 
 .role-selection-container {
   display: flex;
-  background-color: #f8f9fa; 
-  padding: 5px;
-  border-radius: 10px;
+  background-color: #f1f3f4; 
+  padding: 4px;
+  border-radius: 8px;
   margin-bottom: 25px;
-  border: 1px solid #eef0f2;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .role-item {
   flex: 1; 
-  padding: 10px 0;
+  padding: 10px;
   border: none;
   background: transparent;
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 0.9rem;
   color: #5f6368;
-  transition: all 0.2s ease;
-  border-radius: 8px;
+  transition: 0.2s;
+  border-radius: 6px;
 }
 
 
 .role-item.active {
-  background-color: #1a73e8;
-  color: white;
+  background-color: white;
+  color: #1a73e8;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-weight: 600;
 }
 
 .role-item:hover:not(.active) {
